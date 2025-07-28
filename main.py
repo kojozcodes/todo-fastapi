@@ -3,6 +3,7 @@ from models import TodoCreate, Todo
 from uuid import uuid4
 from datetime import datetime
 from models import TodoUpdate
+from fastapi import status
 
 app = FastAPI()
 DB = {}
@@ -38,3 +39,9 @@ def update_todo(id: str, updates: TodoUpdate):
     updated_todo = todo.copy(update=update_data)
     DB[id] = updated_todo
     return updated_todo
+
+@app.delete("/todos/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_todo(id: str):
+    deleted = DB.pop(id, None)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Todo not found")
