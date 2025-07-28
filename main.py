@@ -12,3 +12,7 @@ def create_todo(todo: TodoCreate):
     new_todo = Todo(id=todo_id, timestamp=datetime.utcnow(), completed=False, **todo.dict())
     DB[todo_id] = new_todo
     return new_todo
+
+@app.get("/todos", response_model=list[Todo])
+def get_all_todos():
+    return sorted(DB.values(), key=lambda todo: todo.timestamp)
