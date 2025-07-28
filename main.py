@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from models import TodoCreate, Todo
 from uuid import uuid4
 from datetime import datetime
+from models import TodoUpdate
 
 app = FastAPI()
 DB = {}
@@ -23,3 +24,17 @@ def get_todo_by_id(id: str):
     if not todo:
         raise HTTPException(status_code=404, detail="Todo not found")
     return todo
+
+
+@app.patch("/todos/{id}", response_model=Todo)
+def update_todo(id: str, updates: TodoUpdate):
+    todo = DB.get(id)
+    if not todo:
+        raise HTTPException(status_code=404, detail="Todo not found")
+
+    update_data = updates.dict(exclude_unset=True)
+
+    # Replace each updated field
+    updated_todo = todo.copy(update=update_data)
+    DB[id] = updated_todo
+    return updated_todo

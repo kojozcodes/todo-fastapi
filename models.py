@@ -11,3 +11,8 @@ class Todo(TodoCreate):
     id: str
     completed: bool = False
     timestamp: datetime
+
+class TodoUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    completed: Optional[bool] = None
