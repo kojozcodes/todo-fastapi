@@ -16,3 +16,10 @@ def create_todo(todo: TodoCreate):
 @app.get("/todos", response_model=list[Todo])
 def get_all_todos():
     return sorted(DB.values(), key=lambda todo: todo.timestamp)
+
+@app.get("/todos/{id}", response_model=Todo)
+def get_todo_by_id(id: str):
+    todo = DB.get(id)
+    if not todo:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    return todo
